@@ -1,5 +1,7 @@
 <?php
 
+  //$base_url = '';
+
   function base_url(){
     return "http://localhost/Pedro/projeto_final/index.php";
   }

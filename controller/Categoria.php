@@ -24,7 +24,8 @@ class Categoria{
     }
 
     function excluir($id){
-        echo "excluir categoria";
+       $this->model->excluir($id);
+       header('Location: ?c=categoria');
     }
 }
 
