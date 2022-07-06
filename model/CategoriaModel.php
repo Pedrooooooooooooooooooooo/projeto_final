@@ -18,14 +18,14 @@ class CategoriaModel{
         $sql = "DELETE FROM categoria WHERE idcategoria = ?";
         $comando = $this->conexao->prepare($sql);
         $comando->bind_param("i", $id);
-        $comando->execute();
+        return $comando->execute();
     }
 
     function atualizar($id, $nome){
         $sql = "UPDATE categoria SET nome = ? WHERE idcategoria = ?";
         $comando = $this->conexao->prepare($sql);
-        $comando->bind_param("si", $nome, $id);
-        $comando->execute();
+        $comando->bind_param("si", $id, $nome);
+        return $comando->execute();
     }
 
     function buscarPorId($id){
