@@ -1,11 +1,13 @@
 <?php
 
-require 'model/ProdutoModel.php';
+require_once 'model/ProdutoModel.php';
+require_once 'model/CategoriaModel.php';
 
 class Produto{
 
     function __construct(){
         $this->modelo = new ProdutoModel();
+        $this->categoria_modelo = new CategoriaModel();
     }
 
     function index(){
@@ -17,7 +19,7 @@ class Produto{
     }
 
     function add(){
-        $produtos = $this->modelo->buscarTudo();
+        $categorias = $this->categoria_modelo->buscarTudo();
         include "view/template/cabecalho.php";
         include "view/template/menu.php";
         include "view/produto/form.php";
@@ -26,28 +28,59 @@ class Produto{
 
     function excluir($id){
        $this->modelo->excluir($id);
-       header('Location: ?c=categoria');
+       header('Location: ?c=produto');
+    }
+
+    function salvar_foto(){
+        
+        if(isset($_FILES['foto']) && !$_FILES['foto']['error']){
+            echo $nome_imagem = time() . $_FILES['foto']['name'];
+            echo $origem = $_FILES['foto']['tmp_name'];
+            echo $destino = "fotos/$nome_imagem";
+            if(move_uploaded_file($origem, $destino)){
+                return $destino;
+            }
+        }
+        return false;
+    
     }
 
     function salvar(){
-        if(isset($_POST['categoria']) && !empty($_POST['categoria'])){
-            if(!empty($_POST['idcategoria'])){
-                $this->modelo->inserir($_POST['categoria']);
+        if(isset($_POST['nome']) && !empty($_POST['nome'])){
+            $nome_foto = $this->salvar_foto() ?? "fotos/semfoto.jpg";
+
+            if(empty($_POST['idproduto'])){
+               
+                $this->modelo->inserir(
+                    $_POST['nome'], 
+                    $_POST['descricao'], 
+                    $_POST['preco'], 
+                    $_POST['marca'], 
+                    $nome_foto, 
+                    $_POST['categoria']);
             }else{
-                $this->modelo->atualizar($_POST['idcategoria'], $_POST['categoria']);
+                $this->modelo->atualizar(
+                    $_POST['idproduto'],
+                    $_POST['nome'], 
+                    $_POST['descricao'], 
+                    $_POST['preco'], 
+                    $_POST['marca'],
+                    $nome_foto, 
+                    $_POST['categoria']
+                );
             }
-            header('Location: ?c=categoria');
+            header('Location: ?c=produto');
         }else{
             echo "Ocorreu um erro, pois os dados não foram enviados";
         }
     }
 
     function editar($id){
-        $categorias = $this->modelo->buscarTudo();
-        $categoria = $this->modelo->buscarPorId($id);
+        $produto = $this->modelo->buscarPorId($id);
+        $categorias = $this->categoria_modelo->buscarTudo();
         include "view/template/cabecalho.php";
         include "view/template/menu.php";
-        include "view/categoria/form.php";
+        include "view/produto/form.php";
         include "view/template/rodape.php";
     }
 

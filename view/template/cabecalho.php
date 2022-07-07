@@ -24,6 +24,6 @@
   <header class="bg-black text-white" > 
         <div class="container pt-3 pb-3">
             <h1>Catalago do IF</h1>
-            <p>Aqui você encontra de tudo 😁</p>
+            <p>Aqui você encontra de tudo</p>
         </div>
   </header>

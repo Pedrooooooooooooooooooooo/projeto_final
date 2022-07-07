@@ -5,11 +5,11 @@
   function base_url(){
     return "http://localhost/Pedro/projeto_final/index.php";
   }
+  
+$controlador_padrao = 'home';
 
-//verifica se foi enviado a variável c que contém
-//o nome do controlador que eu quero executar
 if(isset($_GET["c"])){
-  $controller = ucfirst($_GET["c"]);
+  $controller = ucfirst($_GET["c"] ?? $controlador_padrao);
   $caminho_controller = "controller/$controller.php";
 
 

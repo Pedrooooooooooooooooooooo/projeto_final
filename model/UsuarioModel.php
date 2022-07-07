@@ -1,35 +1,46 @@
 <?php
 require_once "config/Conexao.php";
-class ProdutoModel{
+class UsuarioModel{
     private $conexao;
 
     function __construct(){
         $this->conexao = Conexao::getConnection();
     }
 
-    function inserir($nome, $descricao, $preco, $marca, $foto, $idcategoria){
-        $sql = "INSERT INTO produto (nome, descricao, preco, marca, foto, categoria_idcategoria ) VALUES (?, ?, ?, ?, ?, ?)";
+    function inserir($login, $senha){
+        $sql = "INSERT INTO usuario (login, senha) VALUES (?,?)";
         $comando = $this->conexao->prepare($sql);
-        $comando->bind_param("ssdssi", $nome, $descricao, $preco, $marca, $foto, $idcategoria);
+        $comando->bind_param("ss", $login, $senha);
         $comando->execute();
     }
 
     function excluir($id){
-        $sql = "DELETE FROM produto WHERE idproduto = ?";
+        $sql = "DELETE FROM usuario WHERE idusuario = ?";
         $comando = $this->conexao->prepare($sql);
         $comando->bind_param("i", $id);
-        return $comando->execute();
+        $comando->execute();
     }
 
-    function atualizar($id, $nome, $descricao, $preco, $marca, $foto, $idcategoria){
-        $sql = "UPDATE produto SET nome = ?, descricao=?, preco=?, marca=?, foto=?, categoria_idcategoria=? WHERE idproduto = ?";
+    function atualizar($id, $login, $senha){
+        $sql = "UPDATE usuario SET login = ?, senha = ? WHERE idusuario = ?";
         $comando = $this->conexao->prepare($sql);
-        $comando->bind_param("ssdssii", $nome, $descricao, $preco, $marca, $foto, $idcategoria, $id);
-        return $comando->execute();
+        $comando->bind_param("ssi", $login, $senha, $id);
+        $comando->execute();
+    }
+
+    function buscarPorLogin($login){
+        $sql = "SELECT * FROM usuario WHERE login = ?";
+        $comando = $this->conexao->prepare($sql);
+        $comando->bind_param("s", $login);
+        if($comando->execute()){
+            $resultados = $comando->get_result();
+            return $resultados->fetch_assoc();
+        }
+        return null;
     }
 
     function buscarPorId($id){
-        $sql = "SELECT * FROM produto WHERE idproduto = ?";
+        $sql = "SELECT * FROM usuario WHERE idusuario = ?";
         $comando = $this->conexao->prepare($sql);
         $comando->bind_param("i", $id);
         if($comando->execute()){
@@ -40,7 +51,7 @@ class ProdutoModel{
     }
 
     function buscarTudo(){
-        $sql = "SELECT * FROM produto";
+        $sql = "SELECT * FROM usuario";
         $comando = $this->conexao->prepare($sql);
         if($comando->execute()){
             $resultados = $comando->get_result();
