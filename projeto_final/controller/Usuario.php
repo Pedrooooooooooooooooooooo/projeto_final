@@ -7,6 +7,10 @@ class Usuario
 
     function __construct()
     {
+        session_start();
+        if (!isset($_SESSION['usuario'])) {
+            header('Location: ?c=restrito&m=login');
+        }
         $this->modelo = new UsuarioModel();
     }
 
@@ -45,7 +49,7 @@ class Usuario
                     die();
                 }
             } else {
-                $this->modelo->atualizar($_POST['idusuario'], ($_POST['login']), password_hash($_POST['senha'], PASSWORD_BCRYPT));               
+                $this->modelo->atualizar($_POST['idusuario'], ($_POST['login']), password_hash($_POST['senha'], PASSWORD_BCRYPT));
             }
             header('Location: ?c=usuario');
         } else {

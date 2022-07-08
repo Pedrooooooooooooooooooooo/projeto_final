@@ -2,13 +2,20 @@
 
 require_once "model/CategoriaModel.php";
 
-class Categoria{
+class Categoria
+{
 
-    function __construct(){
+    function __construct()
+    {
+        session_start();
+        if (!isset($_SESSION['usuario'])) {
+            header('Location: ?c=restrito&m=login');
+        }
         $this->modelo = new CategoriaModel();
     }
 
-    function index(){
+    function index()
+    {
         $categorias = $this->modelo->buscarTudo();
         include "view/template/cabecalho.php";
         include "view/template/menu.php";
@@ -16,7 +23,8 @@ class Categoria{
         include "view/template/rodape.php";
     }
 
-    function add(){
+    function add()
+    {
         $categorias = $this->modelo->buscarTudo();
         include "view/template/cabecalho.php";
         include "view/template/menu.php";
@@ -24,25 +32,28 @@ class Categoria{
         include "view/template/rodape.php";
     }
 
-    function excluir($id){
-       $this->modelo->excluir($id);
-       header('Location: ?c=categoria');
+    function excluir($id)
+    {
+        $this->modelo->excluir($id);
+        header('Location: ?c=categoria');
     }
 
-    function salvar(){
-        if(isset($_POST['categoria']) && !empty($_POST['categoria'])){
-            if(empty($_POST['idcategoria'])){
+    function salvar()
+    {
+        if (isset($_POST['categoria']) && !empty($_POST['categoria'])) {
+            if (empty($_POST['idcategoria'])) {
                 $this->modelo->inserir($_POST['categoria']);
-            }else{
+            } else {
                 $this->modelo->atualizar($_POST['categoria'], $_POST['idcategoria']);
             }
             header('Location: ?c=categoria');
-        }else{
+        } else {
             echo "Ocorreu um erro, pois os dados não foram enviados";
         }
     }
 
-    function editar($id){
+    function editar($id)
+    {
         $categorias = $this->modelo->buscarTudo();
         $categoria = $this->modelo->buscarPorId($id);
         include "view/template/cabecalho.php";
@@ -50,7 +61,6 @@ class Categoria{
         include "view/categoria/form.php";
         include "view/template/rodape.php";
     }
-
 }
 
 //
@@ -59,4 +69,3 @@ class Categoria{
 //$categoria->atualizar(4, "SmartPhone");
 //var_dump($categoria->buscarPorId(3));
 //var_dump($categoria->buscarTudo());
-
